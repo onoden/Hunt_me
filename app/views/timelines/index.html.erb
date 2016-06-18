@@ -1,0 +1,43 @@
+<!-- カードデザイン実装 -->
+<style>
+.demo-card-wide.mdl-card {
+  width: 400px;
+}
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 300px;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
+}
+</style>
+
+<div class="clearfix">
+<% @students.each do |student| %>
+<% if current_user.id == student.user_id %>
+  <% if student.manager.presence == false %>
+    <div class="col-md-4 absent">
+  <% else %>
+    <div class="col-md-4 presence">
+  <% end %>
+      <div class="demo-card-wide mdl-card mdl-shadow--2dp" style="background: url(<%= image_tag(student.image_url).match(/<img\ssrc=("[^"]+")\salt="[^"]+"\s\/>/)[1] if student.image? %>); background-repeat: no-repeat; float:left; margin:10px 0;">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text" style="color:black;"><%= student.name %></h2>
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+          <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" style="text-decoration:none;">
+            生徒詳細
+          </a>
+        </div>
+        <div class="mdl-card__menu">
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">share</i>
+          </button>
+        </div>
+      </div>
+    </div>
+<% end %>
+<% end %>
+</div>
+
+</div>

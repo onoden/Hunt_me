@@ -1,0 +1,97 @@
+<!-- tableで実装 -->
+<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+<thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Name</th>
+      <th>ID</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  <% @students.each do |student| %>
+    <% if current_user.id == student.user_id %>
+      <% @ary << {:presence => false} %>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric"><%= student.name %></td>
+        <td><%= student.student_id %></td>
+        <td><%= link_to student_path(student.id), method: :delete, data: {confirm: "除名しますか？"}, :class => "mdl-button mdl-js-button mdl-button--icon" do %>
+              <i class="material-icons md-48">delete</i>
+            <% end %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>
+
+<div style="width:30%; margin:0 auto;">
+<%= link_to "更新", root_path, :class => "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect", :style => "margin:30px; width:300px; text-decoration:none;",onclick: "presence()", :remote => true %>
+</div>
+
+<!--出欠登録した際に表示するダイアログメッセージのデザイン-->
+<dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title", style="text-align: center;"> 出欠完了</h4>
+    <div class="mdl-dialog__content">
+      <p>
+      </p>
+    </div>
+    <div class="mdl-dialog__actions">
+      <%= link_to "トップページへ", timeline_path, :style => "text-decoration:none;" %>
+      <%= link_to "ランキングをみる", ranking_path, :style => "text-decoration:none;" %>
+    </div>
+  </dialog>
+
+
+<!-- ajaxを利用してコントローラにパラメータを渡す -->
+<script>
+  function presence() {
+    var labels, len, obj, json;
+    var dialog = document.querySelector('dialog');
+
+    labels = document.getElementsByTagName('label');
+    obj = <%= raw @ary.to_json %>;
+    json = eval(obj);
+
+    for (var i = 1, len = labels.length; i < len; i++){
+        if (labels[i].className == "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select mdl-js-ripple-effect--ignore-events is-upgraded is-checked"){
+          json[i-1]["presence"] = true;
+        }
+    }
+
+  $.ajax({
+    url: '/shukketu',
+    type: 'POST',
+    data: {
+      managers: json
+    },
+  })
+  .done(function(response){
+    dialog.showModal();
+  })
+  .fail(function(xhr){
+    window.alert('通信失敗');
+  });
+
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

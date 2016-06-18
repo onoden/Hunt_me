@@ -1,0 +1,32 @@
+  <h1>ランキング</h1>
+
+<div class="ranking_box">
+  <% @students.each do |student| %>
+    <% if current_user.id == student.user_id %>
+      <% if student.manager.score != 0 %>
+        <%= student.name %>
+        <% @scores << student.manager.score.to_s + "%" %>
+        <div class="jqmeter-container" style="margin-left:40px;">
+        </div>
+      <% else %>
+        <div><%= student.name %>は除名されました</div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+  <script>
+    var i = 0;
+    var scores = <%= raw @scores %>;
+    $('.jqmeter-container').each(function(){
+      $(this).jQMeter({
+      goal:'100',
+      raised:scores[i],
+      width:'80%',
+      height:'20px'
+      });
+      i += 1;
+    });
+
+
+  </script>
